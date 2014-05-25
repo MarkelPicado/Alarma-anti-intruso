@@ -1,0 +1,162 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 1991-2013 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+*/
+(header "symbol" (version "1.1"))
+(symbol
+	(rect 16 16 208 320)
+	(text "luces" (rect 5 0 25 12)(font "Arial" ))
+	(text "inst" (rect 8 288 20 300)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk" (rect 0 0 10 12)(font "Arial" ))
+		(text "clk" (rect 21 27 31 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32)(line_width 1))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "reset" (rect 0 0 20 12)(font "Arial" ))
+		(text "reset" (rect 21 43 41 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48)(line_width 1))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "alarma_activada" (rect 0 0 66 12)(font "Arial" ))
+		(text "alarma_activada" (rect 21 59 87 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64)(line_width 1))
+	)
+	(port
+		(pt 192 32)
+		(output)
+		(text "rojo2" (rect 0 0 18 12)(font "Arial" ))
+		(text "rojo2" (rect 153 27 171 39)(font "Arial" ))
+		(line (pt 192 32)(pt 176 32)(line_width 1))
+	)
+	(port
+		(pt 192 48)
+		(output)
+		(text "rojo3" (rect 0 0 18 12)(font "Arial" ))
+		(text "rojo3" (rect 153 43 171 55)(font "Arial" ))
+		(line (pt 192 48)(pt 176 48)(line_width 1))
+	)
+	(port
+		(pt 192 64)
+		(output)
+		(text "rojo4" (rect 0 0 20 12)(font "Arial" ))
+		(text "rojo4" (rect 151 59 171 71)(font "Arial" ))
+		(line (pt 192 64)(pt 176 64)(line_width 1))
+	)
+	(port
+		(pt 192 80)
+		(output)
+		(text "rojo5" (rect 0 0 18 12)(font "Arial" ))
+		(text "rojo5" (rect 153 75 171 87)(font "Arial" ))
+		(line (pt 192 80)(pt 176 80)(line_width 1))
+	)
+	(port
+		(pt 192 96)
+		(output)
+		(text "rojo6" (rect 0 0 18 12)(font "Arial" ))
+		(text "rojo6" (rect 153 91 171 103)(font "Arial" ))
+		(line (pt 192 96)(pt 176 96)(line_width 1))
+	)
+	(port
+		(pt 192 112)
+		(output)
+		(text "rojo7" (rect 0 0 18 12)(font "Arial" ))
+		(text "rojo7" (rect 153 107 171 119)(font "Arial" ))
+		(line (pt 192 112)(pt 176 112)(line_width 1))
+	)
+	(port
+		(pt 192 128)
+		(output)
+		(text "rojo8" (rect 0 0 18 12)(font "Arial" ))
+		(text "rojo8" (rect 153 123 171 135)(font "Arial" ))
+		(line (pt 192 128)(pt 176 128)(line_width 1))
+	)
+	(port
+		(pt 192 144)
+		(output)
+		(text "rojo9" (rect 0 0 18 12)(font "Arial" ))
+		(text "rojo9" (rect 153 139 171 151)(font "Arial" ))
+		(line (pt 192 144)(pt 176 144)(line_width 1))
+	)
+	(port
+		(pt 192 160)
+		(output)
+		(text "rojo10" (rect 0 0 22 12)(font "Arial" ))
+		(text "rojo10" (rect 149 155 171 167)(font "Arial" ))
+		(line (pt 192 160)(pt 176 160)(line_width 1))
+	)
+	(port
+		(pt 192 176)
+		(output)
+		(text "rojo11" (rect 0 0 21 12)(font "Arial" ))
+		(text "rojo11" (rect 150 171 171 183)(font "Arial" ))
+		(line (pt 192 176)(pt 176 176)(line_width 1))
+	)
+	(port
+		(pt 192 192)
+		(output)
+		(text "rojo12" (rect 0 0 22 12)(font "Arial" ))
+		(text "rojo12" (rect 149 187 171 199)(font "Arial" ))
+		(line (pt 192 192)(pt 176 192)(line_width 1))
+	)
+	(port
+		(pt 192 208)
+		(output)
+		(text "rojo13" (rect 0 0 22 12)(font "Arial" ))
+		(text "rojo13" (rect 149 203 171 215)(font "Arial" ))
+		(line (pt 192 208)(pt 176 208)(line_width 1))
+	)
+	(port
+		(pt 192 224)
+		(output)
+		(text "rojo14" (rect 0 0 23 12)(font "Arial" ))
+		(text "rojo14" (rect 148 219 171 231)(font "Arial" ))
+		(line (pt 192 224)(pt 176 224)(line_width 1))
+	)
+	(port
+		(pt 192 240)
+		(output)
+		(text "rojo15" (rect 0 0 22 12)(font "Arial" ))
+		(text "rojo15" (rect 149 235 171 247)(font "Arial" ))
+		(line (pt 192 240)(pt 176 240)(line_width 1))
+	)
+	(port
+		(pt 192 256)
+		(output)
+		(text "rojo16" (rect 0 0 22 12)(font "Arial" ))
+		(text "rojo16" (rect 149 251 171 263)(font "Arial" ))
+		(line (pt 192 256)(pt 176 256)(line_width 1))
+	)
+	(port
+		(pt 192 272)
+		(output)
+		(text "rojo17" (rect 0 0 22 12)(font "Arial" ))
+		(text "rojo17" (rect 149 267 171 279)(font "Arial" ))
+		(line (pt 192 272)(pt 176 272)(line_width 1))
+	)
+	(drawing
+		(rectangle (rect 16 16 176 288)(line_width 1))
+	)
+)

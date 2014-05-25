@@ -1,0 +1,303 @@
+
+-------------------
+--  PLANTILLA_VHDL.vhd
+---------------------
+
+
+--  Library Clause
+LIBRARY IEEE;
+LIBRARY work;
+
+
+--  Use Clause
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.std_logic_arith.all;
+USE IEEE.std_logic_unsigned.all;
+
+
+ENTITY Gestor_alarma IS
+PORT(
+	reset, clk     : in std_logic;
+	sensor,AS		: IN STD_LOGIC;							-- Entradas y salidas del m�dulo
+	t_activA,t_desacA				: IN STD_LOGIC_VECTOR (6 DOWNTO 0);	
+	res_actA,t_res_A				: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+	led1,led2,led3,led4          : OUT STD_LOGIC_VECTOR (6 DOWNTO 0);	
+	activado_A,alarma_A,intrusoA				: OUT STD_LOGIC			
+
+	);
+END Gestor_alarma;
+
+ARCHITECTURE arq_Gestor_alarma OF Gestor_alarma IS
+
+
+	--Definici�n de se�ales internas
+	type estado is (e0, e1, e2, e3, e4, e5, e6, e7);
+	signal ep, es 		                     :estado;
+	
+	SIGNAL fin_act,fin_des,segundo_pasado	 			:STD_LOGIC;					
+	SIGNAL ld_act,ld_des,dec_cont_act,dec_cont_des,inc_t,cl_t 				:STD_LOGIC;
+	
+	SIGNAL  tiempo: natural range 0 to 50000000;	
+	SIGNAL cont_res_actA,cont_t_res_A				: STD_LOGIC_VECTOR (6 DOWNTO 0);		
+	SIGNAL  tiempoactiv: natural range 0 to 99;
+	SIGNAL  decimalact: natural range 0 to 99;
+	SIGNAL  digitoact: natural range 0 to 9;
+	SIGNAL  tiempodes: natural range 0 to 99;
+	SIGNAL  decimaldes: natural range 0 to 99;
+	SIGNAL  digitodes: natural range 0 to 9;
+	
+	
+	------------------------------------------------------------------------
+	--UNIDAD DE CONTROL
+	------------------------------------------------------------------------
+
+BEGIN	-- transici�n de estados
+
+	PROCESS (ep,AS,fin_act,fin_des,sensor)	-- Lista de sensibilidad
+	BEGIN
+		CASE ep IS
+			WHEN e0 =>
+				if AS='1' then		    es <= e1;
+				else					            es <= e0;
+				end if;
+				
+			WHEN e1 => es<= e2;
+			WHEN e2 => es<= e6;
+			WHEN e6 =>
+				if segundo_pasado='1' then
+					
+						if fin_act='1' then		    es <= e3;
+						elsif	AS='1' then es<=e2;
+						else es<=e0;
+						end if;	
+					
+				elsif AS='1' then es<= e6;
+				else es<=e0;
+				end if;
+			WHEN e3 =>
+				if sensor='1' then		    es <= e4;
+				elsif AS='1' then es <= e3;
+			  else es<=e0;
+				end if;	
+			WHEN e4 => es<= e7;
+			WHEN e7 =>
+				
+				if segundo_pasado='1' then
+					if fin_des='1' then	es <= e5;
+					elsif AS='1' then es <= e4;
+					else es<=e0;
+					end if;		
+				elsif AS='1' then es<=e7;
+				else es<=e0;
+				end if;
+			WHEN e5 =>
+				if AS='1' then		    es <= e5;
+				else	es <= e0;
+				end if;		 
+				
+		END CASE;
+	
+	END PROCESS ;
+
+------------------------------------------------------------------------
+--Registro de estados
+-----------------------
+
+	PROCESS (clk,reset)
+	BEGIN
+		IF (clk'EVENT AND clk='1') THEN 
+			IF reset = '1' THEN 
+				ep <= e0;
+			ELSE 
+				ep <= es;
+			END IF;
+		END IF;
+	END PROCESS ;
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-- SE�ALES DE CONTROL
+-------------------------------------------------------------------------
+
+ld_act		 	<= '1' WHEN (ep = e0 or ep = e1)
+					ELSE '0';
+ld_des		 	<= '1' WHEN (ep = e0 or ep = e1)
+					ELSE '0';					
+dec_cont_act			<= '1' WHEN ep = e2
+					ELSE '0';
+activado_A			<= '1' WHEN (ep = e3 or ep = e4 or ep = e5 or ep= e7)
+					ELSE '0';
+intrusoA			<= '1' WHEN (ep = e4 or ep= e7)
+					ELSE '0';
+dec_cont_des			<= '1' WHEN ep = e4
+					ELSE '0';			
+alarma_A			<= '1' WHEN ep = e5
+					ELSE '0';	
+cl_t  			<= '1' WHEN (ep=e2 or ep=e4) ELSE '0';
+
+inc_t				<=	'1' WHEN (ep=e6 or ep=e7) ELSE '0';
+					
+
+					
+
+
+							
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------		
+--UNIDAD DE PROCESO
+----------------------------------------------------------------------------	
+	
+
+-- CONTADORES, registros, etc
+
+
+	PROCESS (clk,reset,cl_t,inc_t)	
+	BEGIN
+		IF (clk'EVENT AND clk='1') THEN 
+			IF reset = '1' THEN 
+				tiempo <= 50000000;					-- Ponemos el contador a Cero
+			ELSIF (cl_t = '1') THEN    		
+				tiempo <= 50000000;					-- cargamos contador
+			ELSIF (inc_t = '1') THEN
+			  if (tiempo > 0) THEN
+			    tiempo <= tiempo -1;	-- decrementamos si el valor es mayor a 0
+				end if;
+			END IF;
+		END IF;
+	END PROCESS;
+
+segundo_pasado <= '1' WHEN (tiempo = 0) else '0';
+
+--contar_act <= 0;
+--if t_activA[0]='1' then contar_act := contar_act + 1;
+--if t_activA[1]='1' then contar_act := contar_act + 2;
+--if t_activA[2]='1' then contar_act := contar_act + 4;
+--if t_activA[3]='1' then contar_act := contar_act + 8;
+--if t_activA[4]='1' then contar_act := contar_act + 16;
+--if t_activA[5]='1' then contar_act := contar_act + 32;
+--if t_activA[6]='1' then contar_act := contar_act + 64;
+--if t_activA[7]='1' then contar_act := contar_act + 128;
+-------------------
+-- CONTADORES
+-------------------
+	
+	PROCESS (clk,reset,ld_act,dec_cont_act)	
+	BEGIN
+		IF (clk'EVENT AND clk='1') THEN 
+			IF reset = '1' THEN 
+				cont_res_actA <="0000000";					-- Ponemos el contador a Cero
+			ELSIF (ld_act = '1') THEN    		
+				cont_res_actA <= t_activA;					-- cargamos contador
+			ELSIF (dec_cont_act = '1') THEN
+			  if (cont_res_actA > "0000000") THEN
+			    cont_res_actA <= cont_res_actA -1;	-- decrementamos si el valor es mayor a 0
+				end if;
+			END IF;
+		END IF;
+	END PROCESS;
+	
+	fin_act <= '1' WHEN (cont_res_actA = "0000000") else '0';
+
+	res_ActA <= cont_res_actA;
+	
+	PROCESS (clk,reset,ld_act,dec_cont_act)	
+	BEGIN
+		IF (clk'EVENT AND clk='1') THEN 
+			IF reset = '1' THEN 
+				cont_t_res_A <="0000000";					-- Ponemos el contador a Cero
+			ELSIF (ld_des = '1') THEN    		
+				cont_t_res_A <= t_desacA;					-- cargamos contador
+			ELSIF (dec_cont_des = '1') THEN
+			  if (cont_t_res_A > "0000000") THEN
+			    cont_t_res_A <= cont_t_res_A -1;	-- decrementamos si el valor es mayor a 0
+				end if;
+			END IF;
+		END IF;
+	END PROCESS;
+
+  fin_des <= '1' WHEN (cont_t_res_A = "0000000") else '0';
+	t_res_A <= cont_t_res_A;
+ 
+    
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+-----------------------
+-- codificador para pasar la se�al al led1(decimal)
+-----------------------gestor_alarma_tb.vhd
+PROCESS (clk,reset,cont_res_actA)	
+	
+	BEGIN
+	  tiempoactiv <= CONV_INTEGER(cont_res_ActA);
+	  decimalact <= tiempoactiv - tiempoactiv rem 10;
+		case (decimalact) is
+	    when 0 => led1 <= "1000000";
+	    when 10 => led1 <= "1111001";
+	    when 20 => led1 <= "0100100";
+	    when 30 => led1 <= "0110000";
+	    when 40 => led1 <= "0011001";
+	    when 50 => led1 <= "0010010";
+	    when 60 => led1 <= "0000010";
+	    when 70 => led1 <= "1111000";
+	    when 80 => led1 <= "0000000";
+	    when 90 => led1 <= "0011000";
+	    when others => led1 <= "0110110";
+	  end case; 
+	  digitoact <= tiempoactiv rem 10; --rem es el restante del modulo 10
+	  case (digitoact) is
+	   when 0 => led2 <= "1000000";
+	    when 1 => led2 <= "1111001";
+	    when 2 => led2 <= "0100100";
+	    when 3 => led2 <= "0110000";
+	    when 4 => led2 <= "0011001";
+	    when 5 => led2 <= "0010010";
+	    when 6 => led2 <= "0000010";
+	    when 7 => led2 <= "1111000";
+	    when 8 => led2 <= "0000000";
+	    when 9 => led2 <= "0011000";
+	  end case; 
+	END PROCESS;
+	 
+	PROCESS (clk,reset,cont_t_res_A)	
+	
+	BEGIN
+	  tiempodes <= CONV_INTEGER(cont_t_res_A);
+	  decimaldes <= tiempodes - tiempodes rem 10;
+		case (decimaldes) is
+	    when 0 => led3 <= "1000000";
+	    when 10 => led3 <= "1111001";
+	    when 20 => led3 <= "0100100";
+	    when 30 => led3 <= "0110000";
+	    when 40 => led3 <= "0011001";
+	    when 50 => led3 <= "0010010";
+	    when 60 => led3 <= "0000010";
+	    when 70 => led3 <= "1111000";
+	    when 80 => led3 <= "0000000";
+	    when 90 => led3 <= "0011000";
+	    when others => led3 <= "0110110";
+	  end case; 
+	  digitodes <= tiempodes rem 10; --rem es el restante del modulo 10
+	  case (digitodes) is
+	    when 0 => led4 <= "1000000";
+	    when 1 => led4 <= "1111001";
+	    when 2 => led4 <= "0100100";
+	    when 3 => led4 <= "0110000";
+	    when 4 => led4 <= "0011001";
+	    when 5 => led4 <= "0010010";
+	    when 6 => led4 <= "0100000";
+	    when 7 => led4 <= "1111000";
+	    when 8 => led4 <= "0000000";
+	    when 9 => led4 <= "0011000";
+	  end case; 
+	END PROCESS;
+	
+
+-----------------------
+-- SALIDAS DEL CIRCUITO
+-----------------------
+
+
+
+	
+
+END arq_Gestor_alarma;
